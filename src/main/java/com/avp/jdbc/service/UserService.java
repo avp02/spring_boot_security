@@ -1,6 +1,5 @@
 package com.avp.jdbc.service;
 
-import ch.qos.logback.core.joran.action.IADataForComplexProperty;
 import com.avp.jdbc.bean.Role;
 import com.avp.jdbc.bean.User;
 import com.avp.jdbc.repository.RoleRepository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
