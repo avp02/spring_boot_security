@@ -24,29 +24,26 @@ public class UserService implements UserDetailsService {
     private EntityManager em;
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    RoleRepository roleRepository;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-
-        User user = userRepository.findByUserName(userName);
-
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-
         return user;
     }
 
     public User findUserById(Long userId) {
-        Optional<User> userFofDB = userRepository.findById(userId);
-        return userFofDB.orElse(new User());
+        Optional<User> userFromDb = userRepository.findById(userId);
+        return userFromDb.orElse(new User());
     }
 
     public List<User> allUsers() {
@@ -54,9 +51,8 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean saveUser(User user) {
-        User userForDB = userRepository.findByUserName(user.getUsername());
-
-        if (userForDB != null) {
+        User userFromDB = userRepository.findByUsername(user.getUsername());
+        if (userFromDB != null) {
             return false;
         }
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
@@ -78,3 +74,4 @@ public class UserService implements UserDetailsService {
                 .setParameter("paramId", idMin).getResultList();
     }
 }
+

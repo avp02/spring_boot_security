@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     @Autowired
     private UserService userService;
 
@@ -23,24 +22,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf()
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .csrf()
                 .disable()
                 .authorizeRequests()
-                //Доступ только для не зарегестрированных пользователей
+                //Доступ только для не зарегистрированных пользователей
                 .antMatchers("/registration").not().fullyAuthenticated()
-                //Доступ только пользователем с ролью Администратора
+                //Доступ только для пользователей с ролью Администратор
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("USER")
-                //доступ разрешен всем пользователям
+                .antMatchers("/feedback").hasRole("USER")
+                //Доступ разрешен всем пользователей
                 .antMatchers("/", "/resources/**").permitAll()
-                //все остальные страницы требуют аутентификации
+                //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
-                //настройка для входа в систему
+                //Настройка для входа в систему
                 .formLogin()
                 .loginPage("/login")
-                //перенаправление на главную страницу после успешного входа
+                //Перенарпавление на главную страницу после успешного входа
                 .defaultSuccessUrl("/")
                 .permitAll()
                 .and()
@@ -49,8 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/");
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    @Autowired
+    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
     }
 }
